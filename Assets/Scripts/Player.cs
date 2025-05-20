@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     Vector3 movVec = new Vector3();
     Animator anim = new Animator();
 
+    [SerializeField] Transform camera;
+
     void Awake()
     {
         anim = GetComponent<Animator>();   
@@ -22,7 +24,11 @@ public class Player : MonoBehaviour
         vAxis = Input.GetAxisRaw("Vertical");
         hAxis = Input.GetAxisRaw("Horizontal");
         runAxis = Input.GetButton("Run");
-        movVec = new Vector3(hAxis, 0 , vAxis).normalized;  // 대각선방향 속도문제 제어
+        Vector3 camForward = camera.forward;
+        Vector3 camRight = camera.right;
+        camForward.y = 0;
+        camRight.y = 0;
+        movVec = camForward * vAxis + camRight * hAxis;  // 대각선방향 속도문제 제어
         transform.position += movVec * speed * Time.deltaTime * (runAxis ? 1f : 0.3f); // 프레임과 상관없이 움직임 제어(Time.deltaTime)
         transform.LookAt(transform.position + movVec);
 
